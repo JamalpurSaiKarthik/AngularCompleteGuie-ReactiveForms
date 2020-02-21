@@ -1,0 +1,81 @@
+<div class="container">
+  <div class="row">
+    <div class="col-xs-12 col-sm-10 col-md-8 col-sm-offset-1 col-md-offset-2">
+
+      <!--Here we are informing Angular not to create a form, instead create a form with user mentioned one.
+      This is acheived with [formGroup] Property Binding, binding to signUpForm(user defined form)-->
+      <form [formGroup]="signUpForm" (ngSubmit)="onSubmit()">
+
+        <!--From Group-->
+        <div formGroupName="userData">
+
+          <div class="form-group">
+            <label for="username">Username</label>  
+          <!--formControlName -- It is a Directive - It tells the Angular, name of the form element in Typescript Form-->
+            <input
+              type="text"
+              id="username"
+              formControlName="username"
+              class="form-control">
+  
+              <!--Adding a validation using get method. --signUpForm.get('username').Valid-->
+              <span *ngIf="!signUpForm.get('userData.username').valid && signUpForm.get('userData.username').touched"
+              class="help-block">
+              <!--Checking the ForbiddenNames Error present in the control-'userData.username' and displaying 
+                  the ErrorMsg accordingly.-->
+              <span *ngIf="signUpForm.get('userData.username').errors['nameisForbidden']">This Username is invalid!!</span>
+              <span *ngIf="signUpForm.get('userData.username').errors['required']">This field is required!!</span>
+            </span>
+          </div>
+          
+  
+          <div class="form-group">
+            <label for="email">email</label>
+            <input
+              type="text"
+              id="email"
+              formControlName="email"
+              class="form-control">
+              <span *ngIf="!signUpForm.get('userData.email').valid && signUpForm.get('userData.email').touched"
+              class="help-block">Please enter a Valid email!!</span>
+          </div>
+
+        </div><!--End of <div formGroupName="userData"> -->
+        
+        <div class="radio" *ngFor="let gender of genders">
+          <label>
+            <input
+              type="radio"
+              formControlName="gender"
+              [value]="gender">{{ gender }}
+          </label>
+        </div>
+
+        <br/>
+
+        <!--Dynamic Controls-->
+        <div formArrayName="hobbies">
+
+          <h4>Your Hobbies</h4>
+          <button class="btn btn-primary" type="button" (click)="onAddHobby()">Add Hobby</button>         
+          <div class="form-group"
+          *ngFor="let hobbyControl of signUpForm.get('hobbies').controls; let i = index">
+          <input type="text" class="form-control" [formControlName]="i">
+          </div>
+
+          <!--Here controls are added dynamically using Form Array.
+          In the Input tag, [formControlName] should be property binding as we are assiging the name dynamically.
+          In case of Username and Email, these properties were already available in Typescript, 
+          only formContolName="email" was enough. -->
+
+        </div>
+
+        <br/>
+        <span *ngIf="!signUpForm.valid && signUpForm.touched"
+            class="help-block">Please enter a Valid data!!</span>
+
+        <button class="btn btn-primary" type="submit">Submit</button>
+      </form>
+    </div>
+  </div>
+</div>
